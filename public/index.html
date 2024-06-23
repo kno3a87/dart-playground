@@ -25,6 +25,7 @@
             justify-content: center;
             height: 100vh;
             background-color: #f0f0f0;
+            padding: 20px;
         }
         .title {
             color: #333;
@@ -79,7 +80,7 @@
         .output-container {
             width: 40%;
             padding: 10px;
-            background-color: #001529; /* Navy background color */
+            background-color: #001529;
             border: 1px solid #ddd;
             border-radius: 5px;
         }
@@ -88,7 +89,31 @@
             margin: 0;
             font-family: Arial, sans-serif;
             font-weight: normal;
-            color: white; /* White text color */
+            color: white;
+        }
+
+        /* スマホ対応のためのメディアクエリ */
+        @media (max-width: 600px) {
+            body {
+                justify-content: flex-start;
+            }
+            .title {
+                font-size: 2rem;
+            }
+            .container {
+                flex-direction: column;
+                width: 100%;
+                align-items: center;
+            }
+            .input-container, .output-container {
+                width: 100%;
+            }
+            button {
+                margin-bottom: 12px;
+            }
+            .output-container {
+                margin-bottom: 24px;
+            }
         }
     </style>
 </head>
