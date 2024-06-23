@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dart playground</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text x=%2250%%22 y=%2250%%22 style=%22dominant-baseline:central;text-anchor:middle;font-size:90px;%22>🎯</text></svg>">
+    <!-- Safari / IE -->
+    <link rel="icon alternate" type="image/png" href="https://cdn.jsdelivr.net/gh/twitter/twemoji@13.0.2/assets/72x72/1f3af.png" />
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+        }
+        .title {
+            color: #333;
+            font-family: 'Fira Code', monospace;
+            font-weight: bold;
+            font-size: 2.5rem;
+            text-align: center;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+        .sub-title {
+            color: #333;
+            font-family: 'Fira Code', monospace;
+            font-size: 1rem;
+            text-align: center;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+        .container {
+            display: flex;
+            flex-direction: row;
+            width: 80%;
+            justify-content: space-between;
+        }
+        .input-container {
+            display: flex;
+            flex-direction: column;
+            width: 58%;
+        }
+        textarea {
+            width: 100%;
+            margin: 0 0 12px 0 ;
+            padding: 10px;
+            font-size: 16px;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+        }
+        button {
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 25px;
+            font-family: Arial, sans-serif;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            width: 100%;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .output-container {
+            width: 40%;
+            padding: 10px;
+            background-color: #001529; /* Navy background color */
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .output-container p {
+            font-size: 1rem;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            font-weight: normal;
+            color: white; /* White text color */
+        }
+    </style>
+</head>
+<body>
+    <div class="title">Dart playground</div>
+    <div class="sub-title">The execution results of the Dart code entered in the text area will be displayed on the right side. Powered by wasm.<br>If you have a feature request/bug report, please contact it as <a href="https://github.com/kno3a87/dart-playground/issues" target="_blank">issues</a>. Made by <a href="https://twitter.com/Kunodayo_oboete" target="_blank">@Kunodayo_oboete</a></div>
+    <div class="container">
+        <div class="input-container">
+            <textarea id="input" rows="25">
+void main() {
+    final num = 2+3;
+    print(num);
+}
+</textarea>
+            <button id="run">Run</button>
+        </div>
+        <div class="output-container">
+            <p id="output"></p>
+        </div>
+    </div>
+    <script>
+        document.getElementById('run').addEventListener('click', () => {
+            const input = document.getElementById('input').value;
+            // Run のたびに出力をクリア
+            document.getElementById('output').innerText = '';
+            // WebAssembly に送る
+            window.postMessage(input, '*');
+        });
+
+        document.addEventListener("DOMContentLoaded", (event) => {
+        const textarea = document.getElementById("input");
+
+        textarea.addEventListener("keydown", function (event) {
+            if (event.key === "Tab") {
+                event.preventDefault();
+                const start = this.selectionStart;
+                const end = this.selectionEnd;
+
+                // 半角スペース4つ挿入
+                this.value =
+                    this.value.substring(0, start) + "    " + this.value.substring(end);
+
+                // カーソルも移動
+                this.selectionStart = this.selectionEnd = start + 4;
+            } else if (event.key === "Enter") {
+                event.preventDefault();
+                const start = this.selectionStart;
+                const end = this.selectionEnd;
+
+                // インデント取得
+                const beforeCursor = this.value.substring(0, start);
+                const lastLineStart = beforeCursor.lastIndexOf('\n') + 1;
+                const lastLine = beforeCursor.substring(lastLineStart);
+                const indentMatch = lastLine.match(/^\s*/);
+                const indent = indentMatch ? indentMatch[0] : '';
+
+                // 改行とインデントを挿入
+                this.value = this.value.substring(0, start) + '\n' + indent + this.value.substring(end);
+
+                // カーソルも移動
+                this.selectionStart = this.selectionEnd = start + 1 + indent.length;
+            }
+        });
+    });
+    </script>
+    <script type="module" src="./index.js"></script>
+</body>
+</html>

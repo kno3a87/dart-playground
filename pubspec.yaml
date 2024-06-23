@@ -1,0 +1,8 @@
+name: dart_playground
+version: 1.0.0
+
+environment:
+  sdk: '3.3.4'
+
+dependencies:
+  dart_eval: ^0.7.9
